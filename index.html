@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trade Routes Generator (printable) - The Castles of Burgundy</title>
+    <script src="https://unpkg.com/vue"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .wrap {
+            width: 370px;
+            /*height: 238px;*/
+            border-radius: 10px;
+            border: 1px solid #AAA;
+            padding: 10px;
+            margin: 10px;
+            float: left;
+        }
+
+        .card {
+            background-size: cover;
+            height: 100%;
+            page-break-inside: avoid;
+            border-radius: 10px;
+        }
+
+        .bg-forest .card {
+            background-image: url(images/forest.jpg);
+        }
+
+        .bg-sea .card {
+            background-image: url(images/sea.jpg);
+        }
+
+        .bg-castle .card {
+            background-image: url(images/castle.jpg);
+        }
+
+        .reward {
+            float: left;
+            width: 33%;
+            padding: 5px;
+            margin-top: 15px;
+        }
+
+        .reward:first-child, .reward:last-child {
+            margin-top: 80px;
+            margin-bottom: 15px;
+        }
+
+        .compact .reward {
+            margin: 0 !important;
+        }
+
+        .reward img {
+            max-width: 100%;
+            border: 6px solid purple;
+        }
+
+        .reward-1 img {
+            border-color: #5a3561;
+        }
+
+        .reward-2 img {
+            border-color: #d0372f;
+        }
+
+        .reward-3 img {
+            border-color: #01977a;
+        }
+
+        .reward-4 img {
+            border-color: #fc8088;
+        }
+
+        .reward-5 img {
+            border-color: #f99235;
+        }
+
+        .reward-6 img {
+            border-color: #594625;
+        }
+
+        @media print {
+            .no-print, .no-print * {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <div id="form" class="no-print container">
+        <h1>The Castles of Burgundy: 8th Expansion – Trade Routes Generator</h1>
+        <h3>Generate your own sets of Trade Routes for The Castles of Burgundy.</h3>
+        <form @submit.prevent="generate()" class="form-group">
+            <div class="form-group">
+                <label>Number of cards</label>
+                <input type="number" min="1" max="100" v-model="qty" class="form-control">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" v-model="noDuplicatedRewards">
+                    Do not duplicate the same actions on a single card
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" v-model="noDuplicatedColors">
+                    Do not duplicate the same color on a single card
+                </label>
+            </div>
+            <button class="btn btn-primary">Generate</button>
+        </form>
+        <div v-if="cards.length > 0">
+            <h5>Enjoy!</h5>
+            <p>Now, before you hit Ctrl+P to print it or save is as PDF - you may further fine tune your Trade Route Cards.</p>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" v-model="compact">
+                    Compact cards
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Background</label>
+                <div class="checkbox">
+                    <label>
+                        <input type="radio" v-model="background" value="no">
+                        No backgroud
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="radio" v-model="background" value="forest">
+                        Forest
+                        <span class="small text-muted">https://fineartamerica.com/featured/in-forest-odon-czintos.html</span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="radio" v-model="background" value="sea">
+                        Sea
+                        <span class="small text-muted">https://beachblissliving.com/affordable-original-sea-beach-paintings-by-etsy-artists/</span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="radio" v-model="background" value="castle">
+                        Castle
+                        <span class="small text-muted">https://www.designyourway.net/blog/inspiration/digital-art/fantasy-digital-paintings-of-castles-40-examples/</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div :class="'cards ' + (compact ? 'compact ' : ' ') + ' bg-' + background">
+        <div v-for="card in cards" class="wrap">
+            <div class="card">
+                <div>
+                    <div v-for="index in 3" :class="'reward reward-' + card.colors[index - 1]">
+                        <img :src="'images/' + card.rewards[index - 1] + '.png'">
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                cards: [],
+                qty: 20,
+                noDuplicatedRewards: false,
+                noDuplicatedColors: false,
+                compact: false,
+                background: 'forest'
+            }
+        },
+        methods: {
+            generate() {
+                this.cards = [];
+                for (var i = 0; i < this.qty; i++) {
+                    var colors = [];
+                    while (colors.length < 3) {
+                        var color = this.getRandom(6);
+                        if (this.noDuplicatedColors && colors.indexOf(color) !== -1) {
+                            continue;
+                        }
+                        colors.push(color);
+                    }
+                    var rewards = [];
+                    while (rewards.length < 3) {
+                        var reward = this.getRandom(9);
+                        if (this.noDuplicatedRewards && rewards.indexOf(reward) !== -1) {
+                            continue;
+                        }
+                        rewards.push(reward);
+                    }
+                    this.cards.push({colors: colors, rewards: rewards});
+                }
+            },
+            getRandom: function (max) {
+                return Math.floor(Math.random() * max) + 1;
+            }
+        }
+    });
+</script>
+</body>
+</html>
