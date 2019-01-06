@@ -10,14 +10,18 @@
             box-sizing: border-box;
         }
 
+        .cards {
+            text-align: center;
+        }
+
         .wrap {
-            width: 370px;
+            /*width: 370px;*/
             /*height: 238px;*/
             border-radius: 10px;
             border: 1px solid #AAA;
-            padding: 10px;
-            margin: 10px;
-            float: left;
+            padding: 5px;
+            margin: 1px;
+            display: inline-block;
         }
 
         .card {
@@ -25,6 +29,7 @@
             height: 100%;
             page-break-inside: avoid;
             border-radius: 10px;
+            padding: 10px;
         }
 
         .bg-forest .card {
@@ -39,25 +44,38 @@
             background-image: url(images/castle.jpg);
         }
 
+        .bg-path .card {
+            background-image: url(images/path.jpg);
+        }
+
+        .bg-river .card {
+            background-image: url(images/river.jpg);
+        }
+
         .reward {
             float: left;
-            width: 33%;
+            /*width: 33%;*/
             padding: 5px;
-            margin-top: 15px;
+            /*margin-top: 15px;*/
         }
 
         .reward:first-child, .reward:last-child {
-            margin-top: 80px;
-            margin-bottom: 15px;
+            margin-top: 70px;
+            /*margin-bottom: 15px;*/
         }
 
         .compact .reward {
             margin: 0 !important;
         }
 
+        .reverse .reward {
+            visibility: hidden;
+        }
+
         .reward img {
-            max-width: 100%;
-            border: 6px solid purple;
+            width: 2.4cm;
+            height: 2.4cm;
+            border: 6px solid;
         }
 
         .reward-1 img {
@@ -125,6 +143,12 @@
                     Compact cards
                 </label>
             </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" v-model="reverse">
+                    Reverse cards
+                </label>
+            </div>
             <div class="form-group">
                 <label>Background</label>
                 <div class="checkbox">
@@ -154,11 +178,25 @@
                         <span class="small text-muted">https://www.designyourway.net/blog/inspiration/digital-art/fantasy-digital-paintings-of-castles-40-examples/</span>
                     </label>
                 </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="radio" v-model="background" value="path">
+                        Path
+                        <span class="small text-muted">https://riahills.com/abandoned-path-landscape-painting/</span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="radio" v-model="background" value="river">
+                        River
+                        <span class="small text-muted">https://www.fizdi.com/river-in-village-art_325_6263-handpainted-art-painting-12in-x-9in/</span>
+                    </label>
+                </div>
             </div>
         </div>
     </div>
 
-    <div :class="'cards ' + (compact ? 'compact ' : ' ') + ' bg-' + background">
+    <div :class="'cards ' + (compact ? 'compact ' : ' ') + (reverse ? 'reverse ' : ' ') + ' bg-' + background">
         <div v-for="card in cards" class="wrap">
             <div class="card">
                 <div>
@@ -178,10 +216,11 @@
         data: function () {
             return {
                 cards: [],
-                qty: 20,
-                noDuplicatedRewards: false,
-                noDuplicatedColors: false,
+                qty: 16,
+                noDuplicatedRewards: true,
+                noDuplicatedColors: true,
                 compact: false,
+                reverse: false,
                 background: 'forest'
             }
         },
