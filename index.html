@@ -3,8 +3,9 @@
 <head>
     <title>Trade Routes Generator (printable) - The Castles of Burgundy</title>
     <script src="https://unpkg.com/vue"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!--<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"-->
+          <!--integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">-->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.3.0/paper.css">-->
     <style>
         * {
             box-sizing: border-box;
@@ -73,8 +74,8 @@
         }
 
         .reward img {
-            width: 2.4cm;
-            height: 2.4cm;
+            width: 2.6cm;
+            height: 2.6cm;
             border: 6px solid;
         }
 
@@ -102,7 +103,17 @@
             border-color: #594625;
         }
 
+        /*@page {*/
+            /*size: A4;*/
+            /*margin: 0;*/
+        /*}*/
+
         @media print {
+            /*html, body {*/
+                /*width: 210mm;*/
+                /*height: 297mm;*/
+            /*}*/
+
             .no-print, .no-print * {
                 display: none !important;
             }
@@ -136,7 +147,8 @@
         </form>
         <div v-if="cards.length > 0">
             <h5>Enjoy!</h5>
-            <p>Now, before you hit Ctrl+P to print it or save is as PDF - you may further fine tune your Trade Route Cards.</p>
+            <p>See your Trade Cards generated below.</p>
+            <p>Before you print it or save is as PDF - you may further fine tune your Trade Route Cards with the following options.</p>
             <div class="checkbox">
                 <label>
                     <input type="checkbox" v-model="compact">
@@ -192,6 +204,13 @@
                         <span class="small text-muted">https://www.fizdi.com/river-in-village-art_325_6263-handpainted-art-painting-12in-x-9in/</span>
                     </label>
                 </div>
+            </div>
+            <div class="small text-muted form-group">
+                Make sure the "print backgrounds" option is checked in the webpage print settings. Disabling print headers and footers is also a
+                good idea.
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-success" onclick="window.print()">Print!</button>
             </div>
         </div>
     </div>
